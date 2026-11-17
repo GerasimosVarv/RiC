@@ -211,7 +211,7 @@ class RiskRegisterSimulation:
                 [df_horizon_values_per_rf, simulation_at_horizon_results], axis=0, ignore_index=True)
             
             # Store Average Impact at Horizon per rf in a list
-            per_rf_horizon_impact_list.append(simulation_at_horizon_results.mean(axis=1)[0])     
+            per_rf_horizon_impact_list.append(simulation_at_horizon_results.mean(axis=1).values[0])     
             
             # Store in a list risk taxonomies information & Titles of Risk Factors
             rf_titles.append(self.df_rr_lite[self.risk_title_col][self.df_rr_lite[self.risk_id_col] == int(risk)].values[0])
