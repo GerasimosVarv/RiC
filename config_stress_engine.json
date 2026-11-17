@@ -1,0 +1,20 @@
+{   
+    "outputs_path": "C:\\Users\\g.varvounis\\Documents\\RiC\\_other_outputs\\_stress_curve",
+    "save_outputs": true,
+
+    "minimum_required_historical_data": 30,
+    "stress_window_size":260,
+
+    "vol_dof": 0,
+    "level": 0.95,
+
+    "year_index": 2022,
+    "stress_date_start": "2026-09-01",
+    "stress_date_end": "2026-09-01",
+    
+    "risk_factors": {"GR Curve": [
+        "GR POWER M0", "GR POWER M1", "GR POWER M2", "GR POWER M3", "GR POWER M4", "GR POWER M5", "GR POWER M6",
+        "GR POWER Q1", "GR POWER Q2", "GR POWER Q3", "GR POWER Q4", "GR POWER Q5",
+        "GR POWER Y1", "GR POWER Y2"
+    ]}
+}

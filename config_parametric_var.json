@@ -1,0 +1,118 @@
+{   
+    "outputs_path": "C:\\Users\\g.varvounis\\Documents\\RiC\\_other_outputs\\_var",
+    "inputs_path": "C:\\Users\\g.varvounis\\OneDrive - HELLENiQ ENERGY\\Risk Section Activity\\RiC Monitoring\\_data\\BBG",
+    "inputs_path_var": "C:\\Users\\g.varvounis\\OneDrive - HELLENiQ ENERGY\\Risk Section Activity\\RiC Monitoring\\_data\\VAR",
+
+    "save_outputs": true,
+
+    "supported_curves": {
+        "GR_CURVE": [
+            "GR POWER M0", "GR POWER M1", "GR POWER M2", "GR POWER M3", "GR POWER M4", "GR POWER M5", "GR POWER M6", 
+            "GR POWER Q1", "GR POWER Q2", "GR POWER Q3", "GR POWER Q4", "GR POWER Q5",
+            "GR POWER Y1", "GR POWER Y2"], 
+        "DE_CURVE": [
+            "DE POWER W0", "DE POWER W1", "DE POWER W2", "DE POWER W3", "DE POWER W4",
+            "DE POWER M0", "DE POWER M1", "DE POWER M2", "DE POWER M3", "DE POWER M4",
+            "DE POWER Q1", "DE POWER Q2", "DE POWER Q3", "DE POWER Q4",
+            "DE POWER Y1", "DE POWER Y2"], 
+        "FR_CURVE": [
+            "FR POWER W0", "FR POWER W1", "FR POWER W2", "FR POWER W3", "FR POWER W4",
+            "FR POWER M0", "FR POWER M1", "FR POWER M2", "FR POWER M3", "FR POWER M4",
+            "FR POWER Q1", "FR POWER Q2", "FR POWER Q3", "FR POWER Q4",
+            "FR POWER Y1", "FR POWER Y2"],
+        "HU_CURVE": [
+            "HU POWER M0", "HU POWER M1", "HU POWER M2", "HU POWER M3", "HU POWER M4",
+            "HU POWER Q1", "HU POWER Q2", "HU POWER Q3", "HU POWER Q4",
+            "HU POWER Y1", "HU POWER Y2"], 
+        "EUA_CURVE": ["EUA M1", "EUA Y0", "EUA Y1"], 
+        "ICE_TTF_CURVE": [
+            "TTF DA", "TTF M1", "TTF M2", "TTF M3", "TTF M4",
+            "TTF M5", "TTF M6", "TTF M7", "TTF M8", "TTF M9",
+            "TTF Q1", "TTF Q2", "TTF Q3", "TTF Q4", "TTF Q5",
+            "TTF Y1", "TTF Y2"], 
+        "ICE_THE_CURVE": [
+            "THE DA", "THE M1", "THE M2", "THE M3", "THE M4",
+            "THE Q1", "THE Q2", "THE Q3", "THE Q4",
+            "THE Y1", "THE Y2"], 
+        "ICE_PSV_CURVE": [
+            "PSV DA", "PSV M1", "PSV M2", "PSV M3", "PSV M4",
+            "PSV Q1", "PSV Q2", "PSV Q3", "PSV Q4",
+            "PSV Y1", "PSV Y2"]},
+
+    "calculation_window": 90,
+    "minimum_required_historical_data": 30,
+    "confidence_level": 0.95,
+    "holding_period": 5,
+    "vol_dof": 1,
+    
+    "ewma": 0.97,
+
+    "month_last_day_index": 31,
+    "year_index": 2024,
+    
+    "risk_factors": [
+        "GR POWER M0", "GR POWER M1", "GR POWER M2", "GR POWER M3", "GR POWER M4",
+        "GR POWER Q1", "GR POWER Q2", "GR POWER Q3", "GR POWER Q4", "GR POWER Q5",
+        "GR POWER Y1", "GR POWER Y2",
+
+        "HU POWER M0", "HU POWER M1", "HU POWER M2", "HU POWER M3", "HU POWER M4", 
+        "HU POWER Q1", "HU POWER Q2", "HU POWER Q3", "HU POWER Q4",
+        "HU POWER Y1", "HU POWER Y2",
+
+        "FR POWER M0", "FR POWER M1", "FR POWER M2", "FR POWER M3", "FR POWER M4",
+        "FR POWER M5", "FR POWER M6", "FR POWER M7", "FR POWER M8",
+        "FR POWER Q1", "FR POWER Q2", "FR POWER Q3", "FR POWER Q4",
+        "FR POWER Y1", "FR POWER Y2",
+
+        "DE POWER M0", "DE POWER M1", "DE POWER M2", "DE POWER M3", "DE POWER M4",
+        "DE POWER Q1", "DE POWER Q2", "DE POWER Q3", "DE POWER Q4",
+        "DE POWER Y1", "DE POWER Y2",
+
+        "TTF M1", "TTF M2", "TTF M3", "TTF M4",
+        "TTF Q1", "TTF Q2", "TTF Q3", "TTF Q4", "TTF Q5",
+        "TTF Y1", "TTF Y2",
+
+        "PSV M1", "PSV M2", "PSV M3", "PSV M4",
+        "PSV Q1", "PSV Q2", "PSV Q3", "PSV Q4",
+        "PSV Y1", "PSV Y2",
+
+        "THE M1", "THE M2", "THE M3", "THE M4",
+        "THE Q1", "THE Q2", "THE Q3", "THE Q4",
+        "THE Y1", "THE Y2",
+
+        "EUA M1", "EUA M2", "EUA M3", "EUA Y0", "EUA Y1"
+    ],
+
+    "exposures": {
+        "GR POWER M0":0, "GR POWER M1":0, "GR POWER M2":0, "GR POWER M3":0, "GR POWER M4":0,
+        "GR POWER Q1":0, "GR POWER Q2":0, "GR POWER Q3":0, "GR POWER Q4":0, "GR POWER Q5":0,
+        "GR POWER Y1":0, "GR POWER Y2":0,
+
+        "HU POWER M0":0, "HU POWER M1":0, "HU POWER M2":0, "HU POWER M3":0, "HU POWER M4":0, 
+        "HU POWER Q1":0, "HU POWER Q2":0, "HU POWER Q3":0, "HU POWER Q4":0,
+        "HU POWER Y1":0, "HU POWER Y2":0,
+
+        "FR POWER M0":0, "FR POWER M1":0, "FR POWER M2":0, "FR POWER M3":0, "FR POWER M4":0,
+        "FR POWER M5":0, "FR POWER M6":0, "FR POWER M7":0, "FR POWER M8":0,
+        "FR POWER Q1":0, "FR POWER Q2":0, "FR POWER Q3":0, "FR POWER Q4":0,
+        "FR POWER Y1":0, "FR POWER Y2":0,
+
+        "DE POWER M0":0, "DE POWER M1":0, "DE POWER M2":0, "DE POWER M3":0, "DE POWER M4":0,
+        "DE POWER Q1":0, "DE POWER Q2":0, "DE POWER Q3":0, "DE POWER Q4":0,
+        "DE POWER Y1":0, "DE POWER Y2":0,
+
+        "TTF M1":0, "TTF M2":0, "TTF M3":0, "TTF M4":0, "TTF M5":0, "TTF M6":-40000, "TTF M7":40000,
+        "TTF Q1":0, "TTF Q2": 0, "TTF Q3":0, "TTF Q4":0, "TTF Q5":0,
+        "TTF Y1":0, "TTF Y2":0,
+
+        "PSV M1":0, "PSV M2":0, "PSV M3":0, "PSV M4":0,
+        "PSV Q1":0, "PSV Q2":0, "PSV Q3":0, "PSV Q4":0,
+        "PSV Y1":0, "PSV Y2":0,
+
+        "THE M1":0, "THE M2":0, "THE M3":0, "THE M4":0,
+        "THE Q1":0, "THE Q2":0, "THE Q3":0, "THE Q4":0,
+        "THE Y1":0, "THE Y2":0,
+
+        "EUA M1":0, "EUA M2":0, "EUA M3":0, "EUA Y0":0, "EUA Y1":0
+    }
+}

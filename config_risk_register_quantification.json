@@ -1,0 +1,23 @@
+{
+    "outputs_path": "C:\\Users\\g.varvounis\\OneDrive - HELLENiQ ENERGY\\Risk Section Activity\\Other Mandates\\Risk Assessment Process\\_data\\risk_register_quantification_results",
+    "save_outputs_to_path": true,
+
+    "risk_register_dir": "C:\\Users\\g.varvounis\\Documents\\RicTool\\_data\\_riskRegister",
+    "risk_register_filename": "risk register lite.xlsx",
+    "risk_register_sheet_name": "RR Lite",
+    "risk_id_col_in_risk_register_lite": "Risk",
+    "risk_title_col_in_risk_register": "Risk Title",
+    "risk_taxonomy_i_col_in_risk_register": "Taxonomy Level I",
+    "risk_taxonomy_ii_col_in_risk_register": "Taxonomy Level II",
+
+    "independent_risks": true,
+    "bernoulli_sampling": true,
+    "horizon_years": 1,
+    "num_steps": 1,
+    "num_scenarios": 10000,
+    "use_cap": true,
+    "cap_value": 400000000,
+    "replication_id": 50
+
+
+}
