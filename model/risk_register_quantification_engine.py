@@ -170,103 +170,188 @@ class RiskRegisterSimulation:
             # Strore Impact sampls as well as relaization (bernoulli) samples
             df_risk_factor_sample.loc[len(df_risk_factor_sample)] = data
 
-            # In case of many steps (horizon <>1) at each step (per scenario - column) calculate cumsum of simulated impacts
-            df_risk_factor_sample = df_risk_factor_sample.cumsum()
 
             df_risk_factor_sample_realization.loc[len(df_risk_factor_sample_realization)] = sample
+        
+        # In case of many steps (horizon <>1) at each step (per scenario - column) calculate cumsum of simulated impacts
+        df_risk_factor_sample = df_risk_factor_sample.cumsum()
         
         logger.info(f"Simulation of {risk_id} completed sucessfully!!")
 
         return df_risk_factor_sample, df_risk_factor_sample_realization
     
     def calculate_meta_statistics(self, df_total_results, dict_results):
-        """Calculates statistics after the Risk Register simulation is conducted."""
+        """
+        Calculates statistics after the Risk Register simulation is conducted.
 
-        # 1 - Per risk factor statistics
-        # Create a list containing risk factors
+        Creates:
+        1. Average impact at horizon per risk factor.
+        2. Total impact statistics at horizon.
+        3. Average cumulative impact per risk factor and simulation step.
+        4. Average cumulative total impact per simulation step.
+        """
+        if df_total_results.empty:
+            raise ValueError("df_total_results is empty.")
+
+        if not dict_results:
+            raise ValueError("dict_results is empty.")
+
+        # Risk IDs are stored as dictionary keys
         risk_factors_list = list(dict_results.keys())
 
-        # Initate a pandas.dataframe to store simulation at horizon results
+
         df_horizon_values_per_rf = pd.DataFrame()
 
-        # Create a list to store risk taxonomies level I
         risk_taxonomies_i = []
-
-        # Create a list to store risk taxonomies level II
         risk_taxonomies_ii = []
-
-        # Create a list to store risk factor titles
         rf_titles = []
-
-        # create a list to store per rf average impacts at horizon
         per_rf_horizon_impact_list = []
 
+        df_average_cumulative_per_rf = pd.DataFrame(index=range(1, len(df_total_results) + 1))
+        df_average_cumulative_per_rf.index.name = "Step"
+
         for risk in risk_factors_list:
-            # Store horizon results of impacts for the rf in a pandas.dataframe
-            simulation_at_horizon_results = dict_results[str(risk)].iloc[-1, :].copy()
-            simulation_at_horizon_results = pd.DataFrame([simulation_at_horizon_results])
 
-            # Update overal pandas.dataframe with horizon results for the new risk factor
+            df_risk_results = dict_results[str(risk)].copy()
+
+            if df_risk_results.empty:
+                raise ValueError(f"Simulation results for risk factor {risk} are empty.")
+            simulation_at_horizon_results = (
+                df_risk_results.iloc[-1, :].copy())
+
+            simulation_at_horizon_results_df = pd.DataFrame([simulation_at_horizon_results])
+
             df_horizon_values_per_rf = pd.concat(
-                [df_horizon_values_per_rf, simulation_at_horizon_results], axis=0, ignore_index=True)
-            
-            # Store Average Impact at Horizon per rf in a list
-            per_rf_horizon_impact_list.append(simulation_at_horizon_results.mean(axis=1).values[0])     
-            
-            # Store in a list risk taxonomies information & Titles of Risk Factors
-            rf_titles.append(self.df_rr_lite[self.risk_title_col][self.df_rr_lite[self.risk_id_col] == int(risk)].values[0])
-            risk_taxonomies_i.append(self.df_rr_lite[self.risk_tax_i_col][self.df_rr_lite[self.risk_id_col] == int(risk)].values[0])
-            risk_taxonomies_ii.append(self.df_rr_lite[self.risk_tax_ii_col][self.df_rr_lite[self.risk_id_col] == int(risk)].values[0])
+            [df_horizon_values_per_rf,simulation_at_horizon_results_df],axis=0, ignore_index=True)
 
-        # Update pandas.dataframe of overal results per rf at horizon with risk taxonomies and risk title information
-        df_horizon_values_per_rf[self.risk_tax_i_col] = risk_taxonomies_i.copy()
-        df_horizon_values_per_rf[self.risk_tax_ii_col] = risk_taxonomies_ii.copy()
-        df_horizon_values_per_rf.index = risk_factors_list.copy()
-        df_horizon_values_per_rf[self.risk_title_col] = rf_titles.copy()
-        df_horizon_values_per_rf['Average Horizon Impact'] = per_rf_horizon_impact_list.copy()
-        # Restrict columns (exclude per scenario results for reporting purposes)
+            # Average impact at the horizon across all scenarios
+            average_horizon_impact = (simulation_at_horizon_results.mean())
+
+            per_rf_horizon_impact_list.append(average_horizon_impact)
+
+       
+            risk_register_row = self.df_rr_lite.loc[self.df_rr_lite[self.risk_id_col] == int(risk)]
+
+            if risk_register_row.empty:
+                raise ValueError(f"Risk factor {risk} was not found in the Risk Register.")
+
+            risk_title = risk_register_row[self.risk_title_col].iloc[0]
+
+            risk_taxonomy_i = risk_register_row[self.risk_tax_i_col].iloc[0]
+
+            risk_taxonomy_ii = risk_register_row[self.risk_tax_ii_col].iloc[0]
+
+            rf_titles.append(risk_title)
+            risk_taxonomies_i.append(risk_taxonomy_i)
+            risk_taxonomies_ii.append(risk_taxonomy_ii)
+
+            average_cumulative_impact = (df_risk_results.mean(axis=1).to_numpy())
+
+            if len(average_cumulative_impact) != len(
+                df_average_cumulative_per_rf):
+                raise ValueError(
+                    f"Risk factor {risk} has "
+                    f"{len(average_cumulative_impact)} steps, but "
+                    f"df_total_results has "
+                    f"{len(df_average_cumulative_per_rf)} steps.")
+
+            column_name = f"{risk} - {risk_title}"
+
+            df_average_cumulative_per_rf[column_name] = (average_cumulative_impact)
+
+        # Add descriptive information to horizon results
+        df_horizon_values_per_rf[self.risk_tax_i_col] = risk_taxonomies_i
+
+        df_horizon_values_per_rf[self.risk_tax_ii_col] = risk_taxonomies_ii
+
+        df_horizon_values_per_rf.index = risk_factors_list
+        df_horizon_values_per_rf.index.name = self.risk_id_col
+
+        df_horizon_values_per_rf[self.risk_title_col] = rf_titles
+
+        df_horizon_values_per_rf["Average Horizon Impact"] = per_rf_horizon_impact_list
+
+        # Restrict columns for reporting
         df_horizon_values_per_rf = df_horizon_values_per_rf[
-            [self.risk_title_col, self.risk_tax_i_col, self.risk_tax_ii_col, 'Average Horizon Impact']]
-        ##################################################################
+        [self.risk_title_col,self.risk_tax_i_col,self.risk_tax_ii_col,"Average Horizon Impact"]]
 
-        # 2 - Total Impact Statistics
-        df_total_results = df_total_results.iloc[-1,:].copy()
+        df_total_average_cumulative = pd.DataFrame(
+            {
+                "Step": range(1, len(df_total_results) + 1),
+                "Average Cumulative Total Impact":
+                    df_total_results.mean(axis=1).to_numpy()
+            }).set_index("Step")
 
-        per_90 = np.percentile(df_total_results.T, 90)
-        per_95 = np.percentile(df_total_results.T, 95)
-        per_99 = np.percentile(df_total_results.T, 99)
-        per_99999 = np.percentile(df_total_results.T, 99.999)
+        total_results_at_horizon = (df_total_results.iloc[-1, :].copy())
 
-        es_90 = np.mean(df_total_results.T[
-                        df_total_results.T >= np.percentile(df_total_results.T, 90)])
-        es_95 = np.mean(df_total_results.T[
-                        df_total_results.T >= np.percentile(df_total_results.T, 95)])
-        es_99 = np.mean(df_total_results.T[
-                        df_total_results.T >= np.percentile(df_total_results.T, 99)])
+        total_results_array = total_results_at_horizon.to_numpy()
 
-        average_value = np.mean(df_total_results.T)
-        median_value = np.median(df_total_results.T)
-        mode_value = st.mode(df_total_results.T)[0]
+        per_90 = np.percentile(total_results_array, 90)
+        per_95 = np.percentile(total_results_array, 95)
+        per_99 = np.percentile(total_results_array, 99)
+        per_99999 = np.percentile(total_results_array, 99.999)
+
+        es_90 = np.mean(total_results_array[total_results_array >= per_90])
+
+        es_95 = np.mean(total_results_array[total_results_array >= per_95])
+
+        es_99 = np.mean(total_results_array[total_results_array >= per_99])
+
+        average_value = np.mean(total_results_array)
+        median_value = np.median(total_results_array)
+
+        mode_result = st.mode(total_results_array, keepdims=False)
+        mode_value = mode_result.mode
 
         horizon_stats = {
-            "90%-Percentile Impact": per_90, "95%-Percentile Impact": per_95,
-            "99%-Percentile Impact": per_99, "99.999%-Percentile Impact": per_99999,
-            "90% ES": es_90, "95% ES": es_95, "99% ES": es_99,
-            "Expected Impact": average_value, "Median Impact": median_value, "Mode Impact": mode_value}
-        
+            "90%-Percentile Impact": per_90,
+            "95%-Percentile Impact": per_95,
+            "99%-Percentile Impact": per_99,
+            "99.999%-Percentile Impact": per_99999,
+            "90% ES": es_90,
+            "95% ES": es_95,
+            "99% ES": es_99,
+            "Expected Impact": average_value,
+            "Median Impact": median_value,
+            "Mode Impact": mode_value}
+
         df_impact_total_at_horizon_metrics = pd.DataFrame(horizon_stats, index=["Horizon"])
 
-        # Re-arange columns for reporting purposes
-        df_impact_total_at_horizon_metrics = df_impact_total_at_horizon_metrics[
-            ["99.999%-Percentile Impact", "99%-Percentile Impact", "99% ES",
-             "95%-Percentile Impact", "95% ES", "90%-Percentile Impact", "90% ES",
-             "Expected Impact", "Median Impact", "Mode Impact"]]
+        # Reorder columns for reporting
+        df_impact_total_at_horizon_metrics = (
+            df_impact_total_at_horizon_metrics[
+                [
+                "99.999%-Percentile Impact", "99%-Percentile Impact",
+                "99% ES", "95%-Percentile Impact", "95% ES",
+                "90%-Percentile Impact", "90% ES",
+                "Expected Impact", "Median Impact", "Mode Impact"]])
 
         if self.save_outputs:
-            df_horizon_values_per_rf.to_excel(create_path(directory=self.outputs_dir, filename="Horizon Values per rf.xlsx"))
-            df_impact_total_at_horizon_metrics.to_excel(create_path(directory=self.outputs_dir, filename="Horizon Total impact Metrics.xlsx"))
+
+            df_horizon_values_per_rf.to_excel(
+                create_path(
+                    directory=self.outputs_dir,
+                    filename="Horizon Values per rf.xlsx"))
+
+            df_impact_total_at_horizon_metrics.to_excel(
+                create_path(
+                    directory=self.outputs_dir,
+                    filename="Horizon Total impact Metrics.xlsx"))
+
+            df_average_cumulative_per_rf.to_excel(
+                create_path(
+                    directory=self.outputs_dir,
+                    filename=(
+                        "Average Cumulative Impact per RF by Step.xlsx")))
+
+            df_total_average_cumulative.to_excel(
+                create_path(
+                    directory=self.outputs_dir,
+                    filename=(
+                        "Average Cumulative Total Impact by Step.xlsx")))
 
         return df_horizon_values_per_rf, df_impact_total_at_horizon_metrics
+
 
     def perform_simulation(self):
         """Performs simulation for all risk factors."""
